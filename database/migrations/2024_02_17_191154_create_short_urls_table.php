@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('redirect_url');
             $table->boolean('single_use')->default(false);
             $table->boolean('track_visits')->default(false);
-            $table->unsignedBigInteger('clicks')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamp('activated_at')->nullable()->default(now());
             $table->timestamp('deactivated_at')->nullable();

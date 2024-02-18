@@ -30,6 +30,7 @@ class ShortURLVisit extends Model
 
     const DEVICE_TYPE_TABLET = 'tablet';
 
+    const DEVICE_TYPE_ROBOT = 'robot';
 
     /**
      * The table associated with the model.

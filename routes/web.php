@@ -3,7 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\URLShortner\ShortURLController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('short-urls', ShortURLController::class)->except(['destroy', 'edit', 'update']);
+    Route::resource('short-urls', ShortURLController::class)->except(['destroy', 'edit', 'update','show']);
 });
+Route::get('s/{code}', [ShortURLController::class, 'show'])->name('show.short-url');
 
 require __DIR__.'/auth.php';

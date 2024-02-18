@@ -7,6 +7,8 @@ import TableHead from '@/Components/TableHead.vue';
 import TableRow from '@/Components/TableRow.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head , Link} from '@inertiajs/vue3';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import NavLink from '@/Components/NavLink.vue';
 
 const props = defineProps({
   shortUrls: {
@@ -26,6 +28,9 @@ const props = defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="overflow-hidden shadow-sm sm:rounded-lg">
+                    <NavLink class="mb-4 float-right" :href="route('short-urls.create')">Add Url</NavLink>
+                </div>
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <Table>
                         <TableHeader>
@@ -39,7 +44,7 @@ const props = defineProps({
                             <TableRow class="bg-white dark:bg-gray-600" v-if="shortUrls.length > 0" v-for="shortUrl in props.shortUrls" :key="shortUrl.id">
                                 <TableCell>{{ shortUrl.id }}</TableCell>
                                 <TableCell>
-                                    <a :href="route('short-urls.show', {short_url: shortUrl.code })" target="_blank">{{ route('short-urls.show', { short_url: shortUrl.code }) }} </a>
+                                    <a :href="shortUrl.short_url" target="_blank">{{ shortUrl.short_url }} </a>
                                 </TableCell>
                                 <TableCell>
                                     <a :href="shortUrl.redirect_url" target="_blank">{{ shortUrl.redirect_url }} </a>

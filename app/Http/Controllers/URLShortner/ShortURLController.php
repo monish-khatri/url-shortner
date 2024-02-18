@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\URLShortner;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\URLShortner\CreateRequest;
 use App\Models\ShortURL;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Response as HttpResponse;
 
 class ShortURLController extends Controller
 {
@@ -27,9 +29,7 @@ class ShortURLController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('ShortURL/Create', [
-            'status' => session('status'),
-        ]);
+        return Inertia::render('ShortURL/Create');
     }
 
     /**
@@ -37,9 +37,20 @@ class ShortURLController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): Response
     {
-        return Redirect::route('short-url.index');
+        $shortUrl = ShortURL::create($request->validated());
+
+        $status = false;
+        $message = "Cannot create Short URL. Please try again!";
+        if($shortUrl) {
+            $status = true;
+            $message = "Short URL created successfully!";
+        }
+        return Inertia::render('ShortURL/Create', [
+            'status' => $status,
+            'message' => $message,
+        ]);
     }
 
     /**
@@ -47,12 +58,14 @@ class ShortURLController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function show($code): RedirectResponse
+    public function show(Request $request, $code): RedirectResponse
     {
         $shortUrl = ShortURL::findByCode($code);
-        if(! $shortUrl->is_active) {
-          return Redirect::route('short-url.index');
+        if(!$shortUrl->shouldAllowAccess()) {
+          abort(HttpResponse::HTTP_FORBIDDEN, message: 'URL does not exist or expired');
         }
+        $shortUrl->recordVisit($request);
+
         return Redirect::to($shortUrl->redirect_url);
     }
 }

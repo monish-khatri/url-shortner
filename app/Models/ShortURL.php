@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Jenssegers\Agent\Agent;
 
 /**
  * Class ShortURL
@@ -23,6 +27,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class ShortURL extends Model
 {
+    /**
+     * A class that can be used to try and detect the
+     * browser and operating system of the visitor.
+     *
+     * @var Agent
+     */
+    protected $agent;
+
     /**
      * The table associated with the model.
      *
@@ -74,6 +86,23 @@ class ShortURL extends Model
         'deactivated_at' => 'datetime',
     ];
 
+    protected $appends = ['short_url'];
+
+    public function __construct()
+    {
+        $this->agent = new Agent();
+    }
+
+    /**
+     * Get the user's first name.
+     */
+    protected function shortUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => route('show.short-url', ['code' => $this->code]),
+        );
+    }
+
     /**
      * A short URL can be visited many times.
      *
@@ -118,5 +147,110 @@ class ShortURL extends Model
     public function trackingEnabled(): bool
     {
         return $this->track_visits;
+    }
+
+    public function shouldAllowAccess() {
+
+        // Check if there are any restrictions on this url
+        if (! $this->is_active) {
+            return false;
+        }
+
+        if ($this->single_use && $this->visits()->count()) {
+            return false;
+        }
+
+        if (! Str::startsWith($this->redirect_url, ['http://', 'https://'])) {
+            return false;
+        }
+
+        if (now()->isBefore($this->activated_at)) {
+            return false;
+        }
+
+        if ($this->deactivated_at && now()->isAfter($this->deactivated_at)) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Record the visit in the database. We record basic
+     * information of the visit if tracking even if
+     * tracking is not enabled. We do this so that
+     * we can check if single-use URLs have been
+     * visited before.
+     *
+     * @param  Request  $request
+     * @return ShortURLVisit
+     */
+    public function recordVisit(Request $request): ShortURLVisit
+    {
+        $visit = new ShortURLVisit();
+
+        $visit->short_url_id = $this->id;
+        $visit->visited_at = now();
+
+        if ($this->track_visits) {
+            $this->trackVisit($request, $visit);
+        }
+
+        $visit->save();
+
+        return $visit;
+    }
+
+    /**
+     * Check which fields should be tracked and then
+     * store them if needed. Otherwise, add them
+     * as null.
+     *
+     * @param  Request  $request
+     * @param  ShortURLVisit  $visit
+     */
+    private function trackVisit(Request $request, ShortURLVisit $visit): void
+    {
+        $visit->ip_address = $request->ip();
+
+        $visit->operating_system = $this->agent->platform();
+
+        $visit->operating_system_version = $this->agent->version($this->agent->platform());
+
+        $visit->browser = $this->agent->browser();
+
+        $visit->browser_version = $this->agent->version($this->agent->browser());
+
+        $visit->referer_url = $request->headers->get('referer');
+
+        $visit->device_type = $this->guessDeviceType();
+    }
+
+    /**
+     * Guess and return the device type that was used to
+     * visit the short URL.
+     *
+     * @return string
+     */
+    private function guessDeviceType(): string
+    {
+        if ($this->agent->isDesktop()) {
+            return ShortURLVisit::DEVICE_TYPE_DESKTOP;
+        }
+
+        if ($this->agent->isMobile()) {
+            return ShortURLVisit::DEVICE_TYPE_MOBILE;
+        }
+
+        if ($this->agent->isTablet()) {
+            return ShortURLVisit::DEVICE_TYPE_TABLET;
+        }
+
+        if ($this->agent->isRobot()) {
+            return ShortURLVisit::DEVICE_TYPE_ROBOT;
+        }
+
+        return '';
     }
 }

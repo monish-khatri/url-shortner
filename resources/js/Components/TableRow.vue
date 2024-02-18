@@ -10,6 +10,8 @@ const props = defineProps({
 const contentClasses = computed(() => {
     return [
         'text-center', // Default class
+        'text-white',
+        'dark:text-gray-300',
         props.class ? props.class : '' // User-given class (if provided)
     ];
 });
