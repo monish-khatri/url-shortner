@@ -9,10 +9,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head , Link} from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import NavLink from '@/Components/NavLink.vue';
-
+import Pagination from '@/Components/Pagination.vue';
 const props = defineProps({
   shortUrls: {
-    type: Array,
+    type: Object,
     required: true
   }
 });
@@ -63,6 +63,7 @@ const props = defineProps({
                             </TableRow>
                         </TableBody>
                     </Table>
+                    <Pagination :pagination="shortUrls.meta"></Pagination>
                 </div>
             </div>
         </div>

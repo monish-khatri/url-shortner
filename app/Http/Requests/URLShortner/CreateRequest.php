@@ -23,13 +23,20 @@ class CreateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'redirect_url' => ['required','url:http,https'],
+        $rules = [
             'is_active' => ['boolean'],
             'single_use' => ['boolean'],
             'track_visits' => ['boolean'],
-            'code' => ['required', 'unique:short_urls,code'],
         ];
+
+        // Check if it's a create request
+        if ($this->isCreateRequest()) {
+            // Add 'code' rule for create requests
+            $rules['code'] = ['required', 'unique:short_urls,code'];
+        }
+
+        return $rules;
+
     }
 
     /**
@@ -50,12 +57,25 @@ class CreateRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        do {
-            $code = Str::random(16);
-        } while (ShortURL::where('code', $code)->exists());
+        if($this->isCreateRequest()) {
+            do {
+                $code = Str::random(16);
+            } while (ShortURL::where('code', $code)->exists());
+
+        } else {
+            $code = $this->code;
+        }
 
         $this->merge([
             'code' => $code,
         ]);
+    }
+
+    /**
+     * Check if the request is a create request.
+     */
+    private function isCreateRequest(): bool
+    {
+        return $this->route()->named('short-urls.create');
     }
 }

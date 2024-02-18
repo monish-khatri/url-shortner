@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('short-urls', ShortURLController::class)->except(['destroy', 'edit', 'update']);
+    Route::resource('short-urls', ShortURLController::class)->except(['destroy', 'edit']);
 });
 
 // public route to redirect short url to original link

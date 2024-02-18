@@ -20,6 +20,9 @@ class ShortURLResource extends JsonResource
             'short_url' => $this->short_url,
             'redirect_url' => $this->redirect_url,
             'clicks' => $this->visits()->count(),
+            'is_active' => $this->is_active,
+            'track_visits' => $this->track_visits,
+            'single_use' => $this->single_use,
         ];
     }
 }

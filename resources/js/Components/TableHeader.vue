@@ -9,7 +9,7 @@ const props = defineProps({
 
 const contentClasses = computed(() => {
     return [
-        'text-center',
+        'text-left',
         'bg-gray-200',
         'dark:bg-gray-700',
         props.class
@@ -19,6 +19,6 @@ const contentClasses = computed(() => {
 
 <template>
     <thead :class="contentClasses.join(' ')">
-            <slot></slot>
+        <slot></slot>
     </thead>
 </template>

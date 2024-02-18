@@ -22,7 +22,7 @@ class ShortURLController extends Controller
     public function index(): Response
     {
         return Inertia::render('ShortURL/Index', [
-            'shortUrls' => ShortURLResource::collection(ShortURL::latest()->get()),
+            'shortUrls' => ShortURLResource::collection(ShortURL::latest()->paginate(10)),
         ]);
     }
 
@@ -60,11 +60,34 @@ class ShortURLController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    public function update(CreateRequest $request, ShortURL $shortUrl): Response
+    {
+        $updated = $shortUrl->update($request->validated());
+
+        $status = false;
+        $message = "Cannot update Short URL. Please try again!";
+        if($updated) {
+            $status = true;
+            $message = "Short URL Updated successfully!";
+        }
+        return Inertia::render('ShortURL/Show', [
+            'shortUrl' => new ShortURLResource($shortUrl),
+            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()),
+            'status' => $status,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Store a new short URL.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function show(ShortURL $shortUrl): Response
     {
         return Inertia::render('ShortURL/Show', [
             'shortUrl' => new ShortURLResource($shortUrl),
-            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->get()),
+            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
         ]);
     }
 
