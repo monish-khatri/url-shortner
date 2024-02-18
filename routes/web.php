@@ -23,8 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('short-urls', ShortURLController::class)->except(['destroy', 'edit', 'update','show']);
+    Route::resource('short-urls', ShortURLController::class)->except(['destroy', 'edit', 'update']);
 });
-Route::get('s/{code}', [ShortURLController::class, 'show'])->name('show.short-url');
+
+// public route to redirect short url to original link
+Route::get('s/{code}', [ShortURLController::class, 'redirectToOriginalLink'])->name('short-url.redirection');
 
 require __DIR__.'/auth.php';

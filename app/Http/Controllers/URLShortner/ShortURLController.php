@@ -4,6 +4,8 @@ namespace App\Http\Controllers\URLShortner;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\URLShortner\CreateRequest;
+use App\Http\Resources\ShortURLResource;
+use App\Http\Resources\ShortURLVisitResource;
 use App\Models\ShortURL;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +22,7 @@ class ShortURLController extends Controller
     public function index(): Response
     {
         return Inertia::render('ShortURL/Index', [
-            'shortUrls' => ShortURL::all(),
+            'shortUrls' => ShortURLResource::collection(ShortURL::latest()->get()),
         ]);
     }
 
@@ -54,11 +56,24 @@ class ShortURLController extends Controller
     }
 
     /**
+     * Store a new short URL.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function show(ShortURL $shortUrl): Response
+    {
+        return Inertia::render('ShortURL/Show', [
+            'shortUrl' => new ShortURLResource($shortUrl),
+            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->get()),
+        ]);
+    }
+
+    /**
      * Redirect Short URL to the original URL.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function show(Request $request, $code): RedirectResponse
+    public function redirectToOriginalLink(Request $request, $code): RedirectResponse
     {
         $shortUrl = ShortURL::findByCode($code);
         if(!$shortUrl->shouldAllowAccess()) {

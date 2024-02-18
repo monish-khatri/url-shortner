@@ -11,7 +11,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import NavLink from '@/Components/NavLink.vue';
 
 const props = defineProps({
-  shortUrls: {
+  shortUrl: {
+    type: Array,
+    required: true
+  },
+  visits: {
     type: Array,
     required: true
   }
@@ -23,43 +27,48 @@ const props = defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Short URLs</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Short URLs Visits: <code class="text-gray-500"><a :href="shortUrl.data.short_url" target="_blank">{{ shortUrl.data.short_url }} </a></code></h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                    <NavLink class="mb-4 float-right" :href="route('short-urls.create')">Add Url</NavLink>
-                </div>
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Sr. No</TableHead>
-                                <TableHead>Short URL</TableHead>
-                                <TableHead>Orginial URL</TableHead>
-                                <TableHead>Clicks</TableHead>
-                                <TableHead>Action</TableHead>
+                                <TableHead>Device Type</TableHead>
+                                <TableHead>IP Address</TableHead>
+                                <TableHead>Operating System Info</TableHead>
+                                <TableHead>Browser Info</TableHead>
+                                <TableHead>Referer URL</TableHead>
+                                <TableHead>Visited At</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow class="bg-white dark:bg-gray-600" v-if="shortUrls.data.length > 0" v-for="(shortUrl, index) in shortUrls.data" :key="shortUrl.id">
+                            <TableRow class="bg-white dark:bg-gray-600" v-if="visits.data.length > 0" v-for="(visit, index) in visits.data" :key="visit.id">
                                 <TableCell>{{ index+1 }}</TableCell>
                                 <TableCell>
-                                    <a :href="shortUrl.short_url" target="_blank">{{ shortUrl.short_url }} </a>
+                                    {{ visit.device_type }}
                                 </TableCell>
                                 <TableCell>
-                                    <a :href="shortUrl.redirect_url" target="_blank">{{ shortUrl.redirect_url }} </a>
+                                    {{ visit.ip_address }}
                                 </TableCell>
                                 <TableCell>
-                                    {{ shortUrl.clicks }}
+                                    {{ visit.operating_system }} - {{ visit.operating_system_version }}
                                 </TableCell>
                                 <TableCell>
-                                    <a :href="route('short-urls.show', {short_url: shortUrl.code})" target="_blank">View</a>
+                                    {{ visit.browser }} - {{ visit.browser_version }}
+                                </TableCell>
+                                <TableCell>
+                                    {{ visit.referer_url }}
+                                </TableCell>
+                                <TableCell>
+                                    {{ visit.visited_at }}
                                 </TableCell>
                             </TableRow>
                             <TableRow class="bg-white dark:bg-gray-600" v-else>
-                                <TableCell colspan="4">No URLs Found</TableCell>
+                                <TableCell colspan="7">No Visits Found</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>

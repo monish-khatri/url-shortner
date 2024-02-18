@@ -93,13 +93,51 @@ class ShortURL extends Model
         $this->agent = new Agent();
     }
 
+     /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'code'; // Use 'code' column as the route key
+    }
+
     /**
-     * Get the user's first name.
+     * Get the short_url
      */
     protected function shortUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => route('show.short-url', ['code' => $this->code]),
+            get: fn () => route('short-url.redirection', ['code' => $this->code]),
+        );
+    }
+
+    /**
+     * Get the deactivated_at
+     */
+    protected function deactivatedAt(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                // Check if $value is a string and convert it to a Carbon instance
+                $carbon = is_string($value) ? Carbon::parse($value) : $value;
+                return $carbon ? $carbon->format('Y-m-d H:i:s') : '';
+            }
+        );
+    }
+
+    /**
+     * Get the activated_at
+     */
+    protected function activatedAt(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                // Check if $value is a string and convert it to a Carbon instance
+                $carbon = is_string($value) ? Carbon::parse($value) : $value;
+                return $carbon ? $carbon->format('Y-m-d H:i:s') : '';
+            }
         );
     }
 

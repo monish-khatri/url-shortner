@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -79,6 +80,20 @@ class ShortURLVisit extends Model
         'short_url_id' => 'integer',
         'visited_at' => 'datetime',
     ];
+
+    /**
+     * Get the visited_at
+     */
+    protected function visitedAt(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                // Check if $value is a string and convert it to a Carbon instance
+                $carbon = is_string($value) ? Carbon::parse($value) : $value;
+                return $carbon ? $carbon->format('Y-m-d H:i:s') : '';
+            }
+        );
+    }
 
     /**
      * A URL visit belongs to one specific shortened URL.
