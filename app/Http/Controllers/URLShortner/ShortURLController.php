@@ -22,7 +22,7 @@ class ShortURLController extends Controller
     public function index(): Response
     {
         return Inertia::render('ShortURL/Index', [
-            'shortUrls' => ShortURLResource::collection(ShortURL::whereUserId(auth()->user()->id)->latest()->paginate(10)),
+            'shortUrls' => ShortURLResource::collection(ShortURL::whereUserId(auth()->user()->id)->latest()->paginate(config('app.pagination'))),
         ]);
     }
 
@@ -73,7 +73,7 @@ class ShortURLController extends Controller
         }
         return Inertia::render('ShortURL/Show', [
             'shortUrl' => new ShortURLResource($shortUrl),
-            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
+            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(config('app.pagination'))),
             'status' => $status,
             'message' => $message,
         ]);
@@ -90,7 +90,7 @@ class ShortURLController extends Controller
 
         return Inertia::render('ShortURL/Show', [
             'shortUrl' => new ShortURLResource($shortUrl),
-            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
+            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(config('app.pagination'))),
         ]);
     }
 
@@ -106,7 +106,7 @@ class ShortURLController extends Controller
         if(!$deleted) {
             return Inertia::render('ShortURL/Show', [
                 'shortUrl' => new ShortURLResource($shortUrl),
-                'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
+                'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(config('app.pagination'))),
                 'status' => false,
                 'message' => "Fail to delete Short URL!",
             ]);
