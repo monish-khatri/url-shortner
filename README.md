@@ -52,6 +52,7 @@ This project is a URL shortener built using the Laravel framework along with Vue
 ### Traceable URL
 - The system tracks various information about the shortened URLs:
 - IP address of the visitor.
+- Operating System of the visitor.
 - Browser information of the visitor.
 - Device information of the visitor.
 - Referral URL from which the visitor accessed the shortened URL.
