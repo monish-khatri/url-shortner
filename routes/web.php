@@ -24,6 +24,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // public route to redirect short url to original link
-Route::get('s/{code}', [ShortURLController::class, 'redirectToOriginalLink'])->name('short-url.redirection')->middleware('guest');
+Route::get('s/{code}', [ShortURLController::class, 'redirectToOriginalLink'])->name('short-url.redirection');
 
 require __DIR__.'/auth.php';
