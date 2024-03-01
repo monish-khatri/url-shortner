@@ -1,6 +1,6 @@
 
-# URL Shortener Project README
-This project is a URL shortener built using Laravel framework along with Vue.js for frontend interactivity and Inertia.js for seamless server-side rendering. The URL shortener allows users to shorten long URLs into more manageable ones and provides additional features such as creating single-use URLs, setting activation and expiration times, and tracking various information about the shortened URLs like IP addresses, browser info, device, referral URLs, and visit timestamps.
+# URL Shortener
+This project is a URL shortener built using the Laravel framework along with Vue.js for frontend interactivity and Inertia.js for seamless server-side rendering. The URL shortener allows users to shorten long URLs into more manageable ones and provides additional features such as creating single-use URLs, setting activation and expiration times, and tracking various information about the shortened URLs like IP addresses, browser info, device, referral URLs, and visit timestamps.
 
 ## Technology Requirements
 - Laravel (>= 8.x)
@@ -38,12 +38,12 @@ This project is a URL shortener built using Laravel framework along with Vue.js 
 
 ## Features
 ### Shorten URL
-    - Users can shorten long URLs to more manageable ones.
+- Users can shorten long URLs to more manageable ones.
 ### Single-Use URL
-    - Users can generate single-use URLs, which become invalid after the first visit.
+- Users can generate single-use URLs, which become invalid after the first visit.
 ### Activation Time and Expiry Time
-    - Users can set activation and expiry times for the shortened URLs.
-    - The shortened URLs become active only after the specified activation time and become invalid after the expiry time.
+- Users can set activation and expiry times for the shortened URLs.
+- The shortened URLs become active only after the specified activation time and become invalid after the expiry time.
 ### Traceable URL
 - The system tracks various information about the shortened URLs:
 - IP address of the visitor.
@@ -57,7 +57,6 @@ This project is a URL shortener built using Laravel framework along with Vue.js 
 
 ## Contributors
 [Monish Khatri](https://github.com/monish-khatri)
-Pull requests and feedback are very welcome :)
 
 ## License
 URL Shortner is open-sourced software licensed under the [MIT license](LICENSE.md).
