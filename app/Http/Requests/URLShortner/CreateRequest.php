@@ -24,14 +24,13 @@ class CreateRequest extends FormRequest
      */
     public function rules(): array
     {
-        dd($this->all());
         $rules = [
             'is_active' => ['boolean'],
             'single_use' => ['boolean'],
             'track_visits' => ['boolean'],
             'redirect_url' => ['required','url:http,https'],
-            'activated_at' => ['sometimes', 'date', 'after_or_equal:now'],
-            // 'deactivated_at' => ['required', 'date', 'after_or_equal:activated_at'],
+            'activated_at' => ['nullable', 'date', 'after_or_equal:now'],
+            'deactivated_at' => ['nullable', 'date', 'after_or_equal:activated_at'],
             'user_id' => ['required'],
         ];
 
@@ -67,7 +66,6 @@ class CreateRequest extends FormRequest
             do {
                 $code = Str::random(16);
             } while (ShortURL::where('code', $code)->exists());
-
         } else {
             $code = $this->code;
         }
@@ -75,8 +73,8 @@ class CreateRequest extends FormRequest
         $this->merge([
             'code' => $code,
             'user_id' => auth()->user()->id,
-            'activated_at' => Carbon::parse($this->activated_at)->utc(),
-            // 'deactivated_at' => Carbon::parse($this->deactivated_at)->utc(),
+            'activated_at' => $this->activated_at ? Carbon::parse($this->activated_at): null,
+            'deactivated_at' => $this->deactivated_at ? Carbon::parse($this->deactivated_at) : null,
         ]);
     }
 

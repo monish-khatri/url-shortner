@@ -27,9 +27,6 @@ const form = useForm({
 });
 
 const submit = () => {
-    console.table(new Date(form.activated_at))
-    form.activated_at = new Date(form.activated_at).toISOString();
-    form.deactivated_at = new Date(form.deactivated_at).toISOString();
     form.post(route('short-urls.store'), {
         onSuccess: () => form.reset(),
     });
@@ -38,18 +35,20 @@ const submit = () => {
 const validateDate = () => {
     const now = new Date().toISOString().split('T')[0];
 
+    form.errors.activated_at = '';
+    form.errors.deactivated_at = '';
     // Validate activated_at
-    if (form.activated_at < now) {
-        form.errors.activated_at = 'Activated date cannot be in the past';
-    } else {
-        form.errors.activated_at = '';
+    if (form.activated_at && form.activated_at < now) {
+        form.errors.activated_at = 'The Activated date must be a date after or equal to Current date.';
     }
 
     // Validate deactivated_at
-    if (form.deactivated_at < now) {
-        form.errors.deactivated_at = 'Deactivated date cannot be in the past';
-    } else {
-        form.errors.deactivated_at = '';
+    if (form.deactivated_at) {
+        if (form.deactivated_at < now) {
+            form.errors.deactivated_at = 'The Expires date must be a date after or equal to Current date.';
+        } else if (form.deactivated_at < form.activated_at) {
+            form.errors.deactivated_at = 'The Expires date must be a date after or equal to Activated date.';
+        }
     }
 };
 </script>
@@ -95,7 +94,7 @@ const validateDate = () => {
                                     <div class="mr-2 w-1/2">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Activated At:</label>
                                         <TextInput
-                                            type="datetime-local"
+                                            type="date"
                                             id="activated_at"
                                             class="mt-1 block w-full"
                                             v-model="form.activated_at"
@@ -106,7 +105,7 @@ const validateDate = () => {
                                     <div class="w-1/2">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Expires At:</label>
                                         <TextInput
-                                            type="datetime-local"
+                                            type="date"
                                             id="deactivated_at"
                                             class="mt-1 block w-full"
                                             v-model="form.deactivated_at"

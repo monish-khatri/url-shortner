@@ -123,7 +123,7 @@ class ShortURL extends Model
             get: function ($value) {
                 // Check if $value is a string and convert it to a Carbon instance
                 $carbon = is_string($value) ? Carbon::parse($value) : $value;
-                return $carbon ? $carbon->format('Y-m-d H:i:s') : '';
+                return $carbon ? $carbon->format('Y-m-d') : '';
             }
         );
     }
@@ -137,7 +137,7 @@ class ShortURL extends Model
             get: function ($value) {
                 // Check if $value is a string and convert it to a Carbon instance
                 $carbon = is_string($value) ? Carbon::parse($value) : $value;
-                return $carbon ? $carbon->format('Y-m-d H:i:s') : '';
+                return $carbon ? $carbon->format('Y-m-d') : '';
             }
         );
     }
@@ -203,7 +203,7 @@ class ShortURL extends Model
             return false;
         }
 
-        if (now()->isBefore($this->activated_at)) {
+        if ($this->activated_at && now()->isBefore($this->activated_at)) {
             return false;
         }
 
@@ -292,7 +292,7 @@ class ShortURL extends Model
 
         return '';
     }
-    
+
     /**
      * Check the permission to see/update/delete URL
      *

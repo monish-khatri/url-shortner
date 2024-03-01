@@ -23,6 +23,8 @@ class ShortURLResource extends JsonResource
             'is_active' => $this->is_active,
             'track_visits' => $this->track_visits,
             'single_use' => $this->single_use,
+            'activated_at' => $this->activated_at,
+            'deactivated_at' => $this->deactivated_at,
         ];
     }
 }
