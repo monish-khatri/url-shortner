@@ -28,6 +28,7 @@ class CreateRequest extends FormRequest
             'single_use' => ['boolean'],
             'track_visits' => ['boolean'],
             'redirect_url' => ['required','url:http,https'],
+            'user_id' => ['required'],
         ];
 
         // Check if it's a create request
@@ -69,6 +70,7 @@ class CreateRequest extends FormRequest
 
         $this->merge([
             'code' => $code,
+            'user_id' => auth()->user()->id,
         ]);
     }
 

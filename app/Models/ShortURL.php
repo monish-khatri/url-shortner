@@ -56,6 +56,7 @@ class ShortURL extends Model
         'is_active',
         'activated_at',
         'deactivated_at',
+        'user_id',
     ];
 
     /**
@@ -290,5 +291,14 @@ class ShortURL extends Model
         }
 
         return '';
+    }
+    
+    /**
+     * Check the permission to see/update/delete URL
+     *
+     * @return bool
+     */
+    public static function hasPermission($shortUrl) {
+        return $shortUrl->user_id == auth()->user()->id ?: abort(404);
     }
 }

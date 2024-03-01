@@ -22,7 +22,7 @@ class ShortURLController extends Controller
     public function index(): Response
     {
         return Inertia::render('ShortURL/Index', [
-            'shortUrls' => ShortURLResource::collection(ShortURL::latest()->paginate(10)),
+            'shortUrls' => ShortURLResource::collection(ShortURL::whereUserId(auth()->user()->id)->latest()->paginate(10)),
         ]);
     }
 
@@ -62,6 +62,7 @@ class ShortURLController extends Controller
      */
     public function update(CreateRequest $request, ShortURL $shortUrl): Response
     {
+        ShortURL::hasPermission($shortUrl);
         $updated = true;
 
         $status = false;
@@ -85,6 +86,8 @@ class ShortURLController extends Controller
      */
     public function show(ShortURL $shortUrl): Response
     {
+        ShortURL::hasPermission($shortUrl);
+
         return Inertia::render('ShortURL/Show', [
             'shortUrl' => new ShortURLResource($shortUrl),
             'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
@@ -96,6 +99,8 @@ class ShortURLController extends Controller
      */
     public function destroy(ShortURL $shortUrl): RedirectResponse|Response
     {
+        ShortURL::hasPermission($shortUrl);
+
         $deleted = $shortUrl->delete();
 
         if(!$deleted) {
