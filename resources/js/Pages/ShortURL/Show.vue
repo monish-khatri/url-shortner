@@ -76,10 +76,6 @@ const validateDate = () => {
     <Head title="Short URls" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Short URLs Visits: <code class="text-gray-500"><a :href="shortUrl.data.short_url" target="_blank">{{ shortUrl.data.short_url }} </a></code></h2>
-        </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="message" :class="{ 'text-green-600': status, 'text-red-600': !status }" class="mb-4 font-medium text-sm">
