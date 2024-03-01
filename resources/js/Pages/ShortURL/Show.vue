@@ -14,6 +14,7 @@ import { Head ,useForm, Link} from '@inertiajs/vue3';
 import NavLink from '@/Components/NavLink.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import Pagination from '@/Components/Pagination.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 
 const props = defineProps({
     shortUrl: {
@@ -43,8 +44,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('short-urls.update', {short_url: props.shortUrl.data.code}), {
-    });
+    form.put(route('short-urls.update', {short_url: props.shortUrl.data.code}));
+};
+const deleteUrl = () => {
+    form.delete(route('short-urls.destroy', {short_url: props.shortUrl.data.code}));
 };
 </script>
 
@@ -111,6 +114,7 @@ const submit = () => {
 
                                 <div class="flex items-center gap-4">
                                     <PrimaryButton :disabled="form.processing">Update</PrimaryButton>
+                                    <DangerButton :disabled="form.processing" @click="deleteUrl">Delete</DangerButton>
 
                                     <Transition
                                         enter-active-class="transition ease-in-out"

@@ -27,6 +27,7 @@ class CreateRequest extends FormRequest
             'is_active' => ['boolean'],
             'single_use' => ['boolean'],
             'track_visits' => ['boolean'],
+            'redirect_url' => ['required','url:http,https'],
         ];
 
         // Check if it's a create request
@@ -76,6 +77,6 @@ class CreateRequest extends FormRequest
      */
     private function isCreateRequest(): bool
     {
-        return $this->route()->named('short-urls.create');
+        return $this->route()->named('short-urls.store');
     }
 }

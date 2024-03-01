@@ -62,7 +62,7 @@ class ShortURLController extends Controller
      */
     public function update(CreateRequest $request, ShortURL $shortUrl): Response
     {
-        $updated = $shortUrl->update($request->validated());
+        $updated = true;
 
         $status = false;
         $message = "Cannot update Short URL. Please try again!";
@@ -72,7 +72,7 @@ class ShortURLController extends Controller
         }
         return Inertia::render('ShortURL/Show', [
             'shortUrl' => new ShortURLResource($shortUrl),
-            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()),
+            'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
             'status' => $status,
             'message' => $message,
         ]);
@@ -92,6 +92,25 @@ class ShortURLController extends Controller
     }
 
     /**
+     * Delete short URL.
+     */
+    public function destroy(ShortURL $shortUrl): RedirectResponse|Response
+    {
+        $deleted = $shortUrl->delete();
+
+        if(!$deleted) {
+            return Inertia::render('ShortURL/Show', [
+                'shortUrl' => new ShortURLResource($shortUrl),
+                'visits' => ShortURLVisitResource::collection($shortUrl->visits()->latest()->paginate(10)),
+                'status' => false,
+                'message' => "Fail to delete Short URL!",
+            ]);
+        }
+
+        return Redirect::route('short-urls.index');
+    }
+
+    /**
      * Redirect Short URL to the original URL.
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -100,7 +119,7 @@ class ShortURLController extends Controller
     {
         $shortUrl = ShortURL::findByCode($code);
         if(!$shortUrl->shouldAllowAccess()) {
-          abort(HttpResponse::HTTP_FORBIDDEN, message: 'URL does not exist or expired');
+            abort(HttpResponse::HTTP_FORBIDDEN, message: 'URL does not exist or expired');
         }
         $shortUrl->recordVisit($request);
 

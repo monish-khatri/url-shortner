@@ -71,8 +71,8 @@ const copyUrlToClipboard = async (url) => {
                                     <a :href="route('short-urls.show', {short_url: shortUrl.code})" target="_blank"><EyeIcon></EyeIcon></a>
                                 </TableCell>
                             </TableRow>
-                            <TableRow class="bg-white dark:bg-gray-600" v-else>
-                                <TableCell colspan="4">No URLs Found</TableCell>
+                            <TableRow class="bg-white dark:bg-gray-600 text-center" v-else>
+                                <TableCell colspan="5">No URLs Found</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
