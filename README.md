@@ -3,9 +3,9 @@
 This project is a URL shortener built using the Laravel framework along with Vue.js for frontend interactivity and Inertia.js for seamless server-side rendering. The URL shortener allows users to shorten long URLs into more manageable ones and provides additional features such as creating single-use URLs, setting activation and expiration times, and tracking various information about the shortened URLs like IP addresses, browser info, device, referral URLs, and visit timestamps.
 
 ## Preview
-![Create Short URLs](demo-images/Create.png)
-![List Short URLs](demo-images/List.png)
-![View Short URLs](demo-images/Show.png)
+![Create Short URLs](public/demo-images/Create.png)
+![List Short URLs](public/demo-images/List.png)
+![View Short URLs](public/demo-images/Show.png)
 
 ## Technology Requirements
 - Laravel (>= 8.x)
