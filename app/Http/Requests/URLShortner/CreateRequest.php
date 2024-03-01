@@ -3,6 +3,7 @@
 namespace App\Http\Requests\URLShortner;
 
 use App\Models\ShortURL;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -23,11 +24,14 @@ class CreateRequest extends FormRequest
      */
     public function rules(): array
     {
+        dd($this->all());
         $rules = [
             'is_active' => ['boolean'],
             'single_use' => ['boolean'],
             'track_visits' => ['boolean'],
             'redirect_url' => ['required','url:http,https'],
+            'activated_at' => ['sometimes', 'date', 'after_or_equal:now'],
+            // 'deactivated_at' => ['required', 'date', 'after_or_equal:activated_at'],
             'user_id' => ['required'],
         ];
 
@@ -71,6 +75,8 @@ class CreateRequest extends FormRequest
         $this->merge([
             'code' => $code,
             'user_id' => auth()->user()->id,
+            'activated_at' => Carbon::parse($this->activated_at)->utc(),
+            // 'deactivated_at' => Carbon::parse($this->deactivated_at)->utc(),
         ]);
     }
 

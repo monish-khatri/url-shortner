@@ -27,9 +27,30 @@ const form = useForm({
 });
 
 const submit = () => {
+    console.table(new Date(form.activated_at))
+    form.activated_at = new Date(form.activated_at).toISOString();
+    form.deactivated_at = new Date(form.deactivated_at).toISOString();
     form.post(route('short-urls.store'), {
         onSuccess: () => form.reset(),
     });
+};
+
+const validateDate = () => {
+    const now = new Date().toISOString().split('T')[0];
+
+    // Validate activated_at
+    if (form.activated_at < now) {
+        form.errors.activated_at = 'Activated date cannot be in the past';
+    } else {
+        form.errors.activated_at = '';
+    }
+
+    // Validate deactivated_at
+    if (form.deactivated_at < now) {
+        form.errors.deactivated_at = 'Deactivated date cannot be in the past';
+    } else {
+        form.errors.deactivated_at = '';
+    }
 };
 </script>
 
@@ -70,7 +91,31 @@ const submit = () => {
 
                                     <InputError class="mt-2" :message="form.errors.redirect_url" />
                                 </div>
-                                <div class="mt-4 w-1/4">
+                                <div class="w-full flex">
+                                    <div class="mr-2 w-1/2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Activated At:</label>
+                                        <TextInput
+                                            type="datetime-local"
+                                            id="activated_at"
+                                            class="mt-1 block w-full"
+                                            v-model="form.activated_at"
+                                            @input="validateDate"
+                                        />
+                                        <InputError class="mt-2" :message="form.errors.activated_at" />
+                                    </div>
+                                    <div class="w-1/2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Expires At:</label>
+                                        <TextInput
+                                            type="datetime-local"
+                                            id="deactivated_at"
+                                            class="mt-1 block w-full"
+                                            v-model="form.deactivated_at"
+                                            @input="validateDate"
+                                        />
+                                        <InputError class="mt-2" :message="form.errors.deactivated_at" />
+                                    </div>
+                                </div>
+                                <div class="mt-4 w-1/">
                                     <label class="flex items-center">
                                         <Checkbox name="is_active" v-model:checked="form.is_active" />
                                         <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Active?</span>

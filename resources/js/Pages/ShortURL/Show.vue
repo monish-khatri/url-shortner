@@ -46,8 +46,27 @@ const form = useForm({
 const submit = () => {
     form.put(route('short-urls.update', {short_url: props.shortUrl.data.code}));
 };
+
 const deleteUrl = () => {
     form.delete(route('short-urls.destroy', {short_url: props.shortUrl.data.code}));
+};
+
+const validateDate = () => {
+    const now = new Date().toISOString().split('T')[0];
+
+    // Validate activated_at
+    if (form.activated_at < now) {
+        form.errors.activated_at = 'Activated date cannot be in the past';
+    } else {
+        form.errors.activated_at = '';
+    }
+
+    // Validate deactivated_at
+    if (form.deactivated_at < now) {
+        form.errors.deactivated_at = 'Deactivated date cannot be in the past';
+    } else {
+        form.errors.deactivated_at = '';
+    }
 };
 </script>
 
@@ -89,6 +108,30 @@ const deleteUrl = () => {
                                     />
 
                                     <InputError class="mt-2" :message="form.errors.redirect_url" />
+                                </div>
+                                <div class="w-full flex">
+                                    <div class="mr-2 w-1/2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Activated At:</label>
+                                        <TextInput
+                                            type="datetime-local"
+                                            id="activated_at"
+                                            class="mt-1 block w-full"
+                                            v-model="form.activated_at"
+                                            @input="validateDate"
+                                        />
+                                        <InputError class="mt-2" :message="form.errors.activated_at" />
+                                    </div>
+                                    <div class="w-1/2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Expires At:</label>
+                                        <TextInput
+                                            type="datetime-local"
+                                            id="deactivated_at"
+                                            class="mt-1 block w-full"
+                                            v-model="form.deactivated_at"
+                                            @input="validateDate"
+                                        />
+                                        <InputError class="mt-2" :message="form.errors.deactivated_at" />
+                                    </div>
                                 </div>
                                 <div class="mt-4 w-1/4">
                                     <label class="flex items-center">
@@ -165,7 +208,7 @@ const deleteUrl = () => {
                                     {{ visit.visited_at }}
                                 </TableCell>
                             </TableRow>
-                            <TableRow class="bg-white dark:bg-gray-600" v-else>
+                            <TableRow class="bg-white dark:bg-gray-600 text-center" v-else>
                                 <TableCell colspan="7">No Visits Found</TableCell>
                             </TableRow>
                         </TableBody>
