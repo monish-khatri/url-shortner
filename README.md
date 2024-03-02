@@ -18,7 +18,7 @@ This project is a URL shortener built using the Laravel framework along with Vue
 
 ## Setup Steps
 - Clone the Repository:
-    - `git clone https://github.com/your/repository.git`
+    - `git clone https://github.com/monish-khatri/url-shortner.git`
 - Navigate to the Project Directory:
     - `cd url-shortner`
 - Install PHP Dependencies:
