@@ -185,7 +185,7 @@ const validateDate = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow class="bg-white dark:bg-gray-600" v-if="visits.data.length > 0" v-for="(visit, index) in visits.data" :key="visit.id">
+                            <TableRow class="bg-white dark:bg-gray-600" v-if="form.track_visits && visits.data.length > 0" v-for="(visit, index) in visits.data" :key="visit.id">
                                 <TableCell>{{ index+1 }}</TableCell>
                                 <TableCell>
                                     {{ visit.device_type }}

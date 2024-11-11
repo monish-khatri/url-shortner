@@ -63,7 +63,7 @@ class ShortURLController extends Controller
     public function update(CreateRequest $request, ShortURL $shortUrl): Response
     {
         ShortURL::hasPermission($shortUrl);
-        $updated = true;
+        $updated = $shortUrl->update($request->validated());
 
         $status = false;
         $message = "Cannot update Short URL. Please try again!";

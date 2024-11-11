@@ -232,7 +232,7 @@ class ShortURL extends Model
         $visit->short_url_id = $this->id;
         $visit->visited_at = now();
 
-        if ($this->track_visits) {
+        if ($this->track_visits || $this->single_use) {
             $this->trackVisit($request, $visit);
         }
 

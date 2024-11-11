@@ -3,6 +3,7 @@
 namespace App\Http\Requests\URLShortner;
 
 use App\Models\ShortURL;
+use App\Models\ShortURLVisit;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -26,8 +27,8 @@ class CreateRequest extends FormRequest
     {
         $rules = [
             'is_active' => ['boolean'],
-            'single_use' => ['boolean'],
             'track_visits' => ['boolean'],
+            'single_use' => ['boolean'],
             'redirect_url' => ['required','url:http,https'],
             'activated_at' => ['nullable', 'date', 'after_or_equal:now'],
             'deactivated_at' => ['nullable', 'date', 'after_or_equal:activated_at'],
